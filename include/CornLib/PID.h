@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 
 namespace cornlib{
 
@@ -26,7 +25,7 @@ class PID{
         float m_error;
         float m_integral;
 
-        std::optional<TIME> m_previous_time = std::nullopt;
+        float m_previous_time;
 
 
     public:

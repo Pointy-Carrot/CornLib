@@ -18,16 +18,19 @@ void cornlib::PID::set_gains(Gains gains){
 
 float cornlib::PID::update(float error){
     // capture time
-    const Time now = Brain.Timer.value();
-    Time dt = (m_previous_time == std::nullopt) ? 0 : now - *m_previous_time;
-    m_previous_time = now;
+    float current_time = Brain.Timer.value();
+    float current_time_dt = 0;
+    if(m_previous_time == 0){
+        current_time_dt = current_time - m_previous_time;
+    }
+    m_previous_time = current_time;
 
     // calculate derivative
-    const float deriv = (dt != 0) ? (error - m_prev_error) / (dt/1000) : 0;
+    const float deriv = (current_time_dt != 0) ? (error - m_prev_error) / (current_time_dt/1000) : 0;
     m_prev_error = error;
 
     // calculate integral
-    m_integral += error * (dt/1000);
+    m_integral += error * (current_time_dt/1000);
 
     // integral resets
     if((((error < 0) && (m_prev_error > 0)) || ((error > 0) && (m_prev_error < 0))) && sign_flip_reset){
